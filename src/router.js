@@ -15,12 +15,16 @@ export default class Router extends Component {
           <Stack.Screen
             name="Login"
             component={LoginRoute}
-            options={{header: () => null}}
+            options={{
+              header: () => null,
+            }}
           />
           <Stack.Screen
             name="CheckIn"
             component={CheckInRoute}
-            options={{headers: () => null}}
+            options={{
+              header: () => null,
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>
