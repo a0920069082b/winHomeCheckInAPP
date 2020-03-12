@@ -28,8 +28,8 @@ export default {
           loading(false);
         }
       } catch (error) {
-        console.log(error);
-        Alert.alert('失敗', '打卡失敗', [{text: '確定'}]);
+        // console.log(error);
+        Alert.alert('失敗', error, [{text: '確定'}]);
       }
     },
   },

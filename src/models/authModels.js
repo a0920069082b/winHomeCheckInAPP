@@ -40,8 +40,8 @@ export default {
           callback(); // 最後執行完之後,要執行的動作
         }
       } catch (error) {
-        console.log(error);
-        Alert.alert('失敗', '登入失敗', [{text: '確定'}]);
+        // console.log(error);
+        Alert.alert('失敗', error, [{text: '確定'}]);
       }
     },
   },

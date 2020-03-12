@@ -1,7 +1,20 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Keyboard,
+  Dimensions,
+  ScrollView,
+  findNodeHandle,
+} from 'react-native';
 import {connect} from 'react-redux';
 import {Input, Layout} from '@ui-kitten/components';
+
+//螢幕得長寬的高度
+const {height} = Dimensions.get('window');
 
 const mapStateToProps = state => {
   return {};
@@ -38,6 +51,21 @@ export default connect(
       };
     }
 
+    _reset() {
+      this.refs.scrollView.scrollTo({y: 0});
+    }
+
+    _onFocus(refName) {
+      setTimeout(() => {
+        let scrollResponder = this.refs.scrollView.getScrollResponder();
+        scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+          findNodeHandle(this.refs[refName]),
+          0,
+          true,
+        );
+      }, 100);
+    }
+
     loginSubmit = () => {
       const {POST_Login} = this.props;
       const {form} = this.state;
@@ -70,69 +98,79 @@ export default connect(
       const isPassWordNotEmpty = form.password.value.length > 0 ? true : false;
 
       return (
-        <Layout style={styles.container}>
-          <Layout style={styles.titleLayoutStyle}>
-            <View>
-              <Image
-                style={styles.imageStyle}
-                source={require('./../assets/winHomeLogo-1.png')}
-              />
-            </View>
-            <View style={styles.titleViewStyle}>
-              <Text style={styles.titleTextStyle} category="3">
-                手機差勤
-              </Text>
-            </View>
-          </Layout>
-
-          <Layout style={styles.inputLayoutStyle}>
-            <Layout style={styles.inputColumnLayoutStyle}>
-              <Layout style={styles.inputRowLayoutStyle} level="1">
-                <Text style={styles.containtTextStyles}>帳 號</Text>
-              </Layout>
-              <Layout style={styles.inputRowLayoutStyle} level="2">
-                <Input
-                  style={styles.inputTextStyles}
-                  status={isUserNameNotEmpty ? 'success' : 'danger'}
-                  caption={isUserNameNotEmpty ? '' : form.username.errorMessage}
-                  value={form.username.value}
-                  placeholder="請輸入帳號"
-                  onChangeText={value =>
-                    this.setState({
-                      form: {...form, username: {...form.username, value}},
-                    })
-                  }
+        <ScrollView ref="scrollView" style={styles.ScrollViewStyle}>
+          <Layout style={styles.container}>
+            <Layout style={styles.titleLayoutStyle}>
+              <View>
+                <Image
+                  style={styles.imageStyle}
+                  source={require('./../assets/winHomeLogo-1.png')}
                 />
-              </Layout>
+              </View>
+              <View style={styles.titleViewStyle}>
+                <Text style={styles.titleTextStyle} category="3">
+                  手機差勤
+                </Text>
+              </View>
             </Layout>
 
-            <Layout style={styles.inputColumnLayoutStyle}>
-              <Layout style={styles.inputRowLayoutStyle} level="1">
-                <Text style={styles.containtTextStyles}>密 碼</Text>
+            <Layout style={styles.inputLayoutStyle}>
+              <Layout style={styles.inputColumnLayoutStyle}>
+                <Layout style={styles.inputRowLayoutStyle} level="1">
+                  <Text style={styles.containtTextStyles}>帳 號</Text>
+                </Layout>
+                <Layout style={styles.inputRowLayoutStyle} level="2">
+                  <Input
+                    style={styles.inputTextStyles}
+                    ref="textInput"
+                    status={isUserNameNotEmpty ? 'success' : 'danger'}
+                    caption={
+                      isUserNameNotEmpty ? '' : form.username.errorMessage
+                    }
+                    value={form.username.value}
+                    placeholder="請輸入帳號"
+                    onChangeText={value =>
+                      this.setState({
+                        form: {...form, username: {...form.username, value}},
+                      })
+                    }
+                    onFocus={this._onFocus.bind(this, 'textInput')}
+                  />
+                </Layout>
               </Layout>
-              <Layout style={styles.inputRowLayoutStyle} level="2">
-                <Input
-                  style={styles.inputTextStyles}
-                  status={isPassWordNotEmpty ? 'success' : 'danger'}
-                  caption={isPassWordNotEmpty ? '' : form.password.errorMessage}
-                  value={form.password.value}
-                  placeholder="請輸入密碼"
-                  onChangeText={value =>
-                    this.setState({
-                      form: {...form, password: {...form.password, value}},
-                    })
-                  }
-                  secureTextEntry={secureTextEntry}
-                />
+
+              <Layout style={styles.inputColumnLayoutStyle}>
+                <Layout style={styles.inputRowLayoutStyle} level="1">
+                  <Text style={styles.containtTextStyles}>密 碼</Text>
+                </Layout>
+                <Layout style={styles.inputRowLayoutStyle} level="2">
+                  <Input
+                    style={styles.inputTextStyles}
+                    ref="textInput"
+                    status={isPassWordNotEmpty ? 'success' : 'danger'}
+                    caption={
+                      isPassWordNotEmpty ? '' : form.password.errorMessage
+                    }
+                    value={form.password.value}
+                    placeholder="請輸入密碼"
+                    onChangeText={value =>
+                      this.setState({
+                        form: {...form, password: {...form.password, value}},
+                      })
+                    }
+                    onFocus={this._onFocus.bind(this, 'textInput')}
+                    secureTextEntry={secureTextEntry}
+                  />
+                </Layout>
               </Layout>
             </Layout>
+            <Layout style={styles.ButtonLayoutStyle}>
+              <TouchableOpacity onPress={this.loginSubmit}>
+                <Text style={styles.buttonStyles}>登 入</Text>
+              </TouchableOpacity>
+            </Layout>
           </Layout>
-          <Layout style={styles.ButtonLayoutStyle}>
-            <TouchableOpacity onPress={this.loginSubmit}>
-              <Text style={styles.buttonStyles}>登 入</Text>
-            </TouchableOpacity>
-          </Layout>
-        </Layout>
+        </ScrollView>
       );
     }
   },
@@ -140,13 +178,22 @@ export default connect(
 
 // 建立樣式
 const styles = StyleSheet.create({
+  ScrollViewStyle: {
+    flex: 1,
+    marginTop: 0,
+    padding: 0,
+    height: height,
+  },
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    height: height,
+    margin: 0,
+    padding: 0,
   },
   titleLayoutStyle: {
-    marginTop: 40,
+    marginTop: -100,
   },
   imageStyle: {
     justifyContent: 'center',
