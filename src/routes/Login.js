@@ -5,7 +5,6 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  Keyboard,
   Dimensions,
   ScrollView,
   findNodeHandle,
@@ -49,17 +48,24 @@ export default connect(
         secureTextEntry: true,
         loading: false,
       };
+      this.scrRef = React.createRef();
+      this.userNameTextInputRef = React.createRef();
+      this.passwordTextInputRef = React.createRef();
     }
 
-    _reset() {
-      this.refs.scrollView.scrollTo({y: 0});
+    _onFocus(textName) {
+      const text =
+        textName === 'userName'
+          ? this.userNameTextInputRef.current
+          : this.passwordTextInputRef.current;
+      this._onScroll(text);
     }
 
-    _onFocus(refName) {
+    _onScroll(text) {
       setTimeout(() => {
-        let scrollResponder = this.refs.scrollView.getScrollResponder();
+        let scrollResponder = this.scrRef.current.getScrollResponder();
         scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
-          findNodeHandle(this.refs[refName]),
+          findNodeHandle(text),
           0,
           true,
         );
@@ -98,7 +104,7 @@ export default connect(
       const isPassWordNotEmpty = form.password.value.length > 0 ? true : false;
 
       return (
-        <ScrollView ref="scrollView" style={styles.ScrollViewStyle}>
+        <ScrollView ref={this.scrRef} style={styles.ScrollViewStyle}>
           <Layout style={styles.container}>
             <Layout style={styles.titleLayoutStyle}>
               <View>
@@ -122,7 +128,7 @@ export default connect(
                 <Layout style={styles.inputRowLayoutStyle} level="2">
                   <Input
                     style={styles.inputTextStyles}
-                    ref="textInput"
+                    ref={this.userNameTextInputRef}
                     status={isUserNameNotEmpty ? 'success' : 'danger'}
                     caption={
                       isUserNameNotEmpty ? '' : form.username.errorMessage
@@ -134,7 +140,7 @@ export default connect(
                         form: {...form, username: {...form.username, value}},
                       })
                     }
-                    onFocus={this._onFocus.bind(this, 'textInput')}
+                    onFocus={this._onFocus.bind(this, 'userName')}
                   />
                 </Layout>
               </Layout>
@@ -146,7 +152,7 @@ export default connect(
                 <Layout style={styles.inputRowLayoutStyle} level="2">
                   <Input
                     style={styles.inputTextStyles}
-                    ref="textInput"
+                    ref={this.passwordTextInputRef}
                     status={isPassWordNotEmpty ? 'success' : 'danger'}
                     caption={
                       isPassWordNotEmpty ? '' : form.password.errorMessage
@@ -158,7 +164,7 @@ export default connect(
                         form: {...form, password: {...form.password, value}},
                       })
                     }
-                    onFocus={this._onFocus.bind(this, 'textInput')}
+                    onFocus={this._onFocus.bind(this, 'password')}
                     secureTextEntry={secureTextEntry}
                   />
                 </Layout>

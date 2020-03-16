@@ -1,11 +1,21 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Dimensions,
+} from 'react-native';
 import {Layout} from '@ui-kitten/components';
 import moment from 'moment';
 import Hr from 'react-native-hr-component';
 import DateTimeClock from '../components/DateTimeClock';
 import _ from 'lodash';
+
+const {height} = Dimensions.get('window');
 
 const mapStateToProps = state => {
   return {
@@ -60,46 +70,48 @@ export default connect(
 
     render() {
       return (
-        <Layout style={styles.container}>
-          <Layout style={styles.titleLayoutStyle}>
-            <View style={styles.imageViewStyle}>
-              <Image
-                style={styles.imageStyle}
-                source={require('./../assets/winHomeLogo-1.png')}
-              />
-            </View>
-            <View style={styles.titleViewStyle}>
-              <Text style={styles.titleTextStyle} category="3">
-                {this.state.userName}，您好
+        <ScrollView ref={this.scrRef} style={styles.ScrollViewStyle}>
+          <Layout style={styles.container}>
+            <Layout style={styles.titleLayoutStyle}>
+              <View style={styles.imageViewStyle}>
+                <Image
+                  style={styles.imageStyle}
+                  source={require('./../assets/winHomeLogo-1.png')}
+                />
+              </View>
+              <View style={styles.titleViewStyle}>
+                <Text style={styles.titleTextStyle} category="3">
+                  {this.state.userName}，您好
+                </Text>
+              </View>
+              <DateTimeClock />
+            </Layout>
+            <Layout style={styles.ButtonLayoutStyle}>
+              <Text style={styles.checkInStatusStyle}>
+                {this.state.checkInStatus}
               </Text>
-            </View>
-            <DateTimeClock />
+              <TouchableOpacity onPress={() => this.checkIn()}>
+                <Text style={styles.buttonStyles}>打 卡</Text>
+              </TouchableOpacity>
+              <Text style={styles.checkInTimeStyle}>
+                {this.state.checkInTime}
+              </Text>
+              <Text style={styles.checkInTimeStyle}>
+                ServerIP: {this.state.serverIP}
+              </Text>
+              <Text style={styles.checkInTimeStyle}>
+                ClientIP: {this.state.clientIP}
+              </Text>
+            </Layout>
+            <Hr
+              lineColor="#82C7D9"
+              text=""
+              thickness={1.5}
+              textPadding={0}
+              hrStyles={styles.lineStyle}
+            />
           </Layout>
-          <Layout style={styles.ButtonLayoutStyle}>
-            <Text style={styles.checkInStatusStyle}>
-              {this.state.checkInStatus}
-            </Text>
-            <TouchableOpacity onPress={() => this.checkIn()}>
-              <Text style={styles.buttonStyles}>打 卡</Text>
-            </TouchableOpacity>
-            <Text style={styles.checkInTimeStyle}>
-              {this.state.checkInTime}
-            </Text>
-            <Text style={styles.checkInTimeStyle}>
-              ServerIP: {this.state.serverIP}
-            </Text>
-            <Text style={styles.checkInTimeStyle}>
-              ClientIP: {this.state.clientIP}
-            </Text>
-          </Layout>
-          <Hr
-            lineColor="#82C7D9"
-            text=""
-            thickness={1.5}
-            textPadding={0}
-            hrStyles={styles.lineStyle}
-          />
-        </Layout>
+        </ScrollView>
       );
     }
   },
@@ -107,10 +119,19 @@ export default connect(
 
 // 建立樣式
 const styles = StyleSheet.create({
+  ScrollViewStyle: {
+    flex: 1,
+    marginTop: 0,
+    padding: 0,
+    height: height,
+  },
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    height: height,
+    margin: 0,
+    padding: 0,
   },
   titleLayoutStyle: {
     marginTop: -10,

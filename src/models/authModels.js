@@ -31,7 +31,6 @@ export default {
 
         // 呼叫tokenUtils的setToken並儲存response.token;
         yield setToken(response.jwtKey);
-        // yield setToken(response.token);
 
         if (loading) {
           loading(false); // 關閉畫面的loading
@@ -40,8 +39,8 @@ export default {
           callback(); // 最後執行完之後,要執行的動作
         }
       } catch (error) {
-        // console.log(error);
-        Alert.alert('失敗', error, [{text: '確定'}]);
+        console.log(error);
+        Alert.alert('失敗', 'error', [{text: '確定'}]);
       }
     },
   },
